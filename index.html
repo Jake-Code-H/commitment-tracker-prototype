@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Commitment Tracker · PROTOTYPE (example data)</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:Inter,"Segoe UI",Arial,Helvetica,sans-serif;color:#222;background:#f4f4f4;font-size:13px;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+.banner{position:sticky;top:0;z-index:50;background:#222;color:#fff;text-align:center;font-size:12px;font-weight:700;letter-spacing:.06em;padding:6px 8px}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border-bottom:1px solid #ccc;padding:8px 14px}
+.logo{font-weight:800;letter-spacing:.04em}
+.ctl{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#555}
+.seg{display:inline-flex;border:1px solid #bbb;border-radius:8px;overflow:hidden;background:#fff}
+.seg button{border:0;background:#fff;padding:5px 10px;font-size:12px;border-right:1px solid #ddd}.seg button:last-child{border-right:0}
+.seg button.on{background:#222;color:#fff}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;padding:8px 14px 0;background:#fff;border-bottom:1px solid #ccc}
+.tabs button{border:0;background:none;padding:7px 12px;border-radius:7px 7px 0 0;font-size:13px;color:#444}
+.tabs button.on{background:#222;color:#fff}
+.wrap{padding:12px 14px}
+.crumb{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#777}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.h1{font-size:20px;font-weight:700;margin:4px 0}
+.card{background:#fff;border:1px solid #ccc;border-radius:10px;padding:12px;min-width:0}
+.btn{display:inline-flex;align-items:center;gap:4px;border:1px solid #888;border-radius:7px;padding:5px 10px;font-size:12px;background:#fff;white-space:nowrap}
+.btn.p{background:#222;color:#fff;border-color:#222}
+.btn[disabled]{color:#999;border-color:#ccc;background:#fafafa;cursor:not-allowed}
+.btn.sm{padding:2px 8px}.back{font-weight:600}
+.chip{display:inline-block;border:1px solid #888;border-radius:999px;padding:1px 8px;font-size:11px;white-space:nowrap;background:#fff}
+.chip.k{background:#222;color:#fff;border-color:#222}.chip.d{border-style:dashed}
+.note{font-size:11px;color:#666}.why{font-size:11px;color:#777}
+.anno{border:1.5px dashed #999;border-radius:8px;padding:6px 10px;font-size:11px;color:#555;background:#fafafa}
+.pill{display:inline-block;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:700;white-space:nowrap}
+.pg{color:#166534;background:#DCFCE7}.pa{color:#92400E;background:#FEF3C7}.pr{color:#991B1B;background:#FEE2E2}
+.c-met{color:#166534;background:#DCFCE7;border-color:#15803D!important}
+.c-late{color:#92400E;background:#FEF3C7;border-color:#B45309!important}
+.c-miss{color:#991B1B;background:#FEE2E2;border-color:#DC2626!important}
+.c-wait{color:#1D4ED8;background:#fff;border:1.5px solid #1D4ED8!important}
+.c-gray{color:#374151;background:#F3F4F6;border-color:#6B7280!important}
+.c-open{color:#374151;background:#fff;border-color:#9CA3AF!important}
+.tier{display:inline-flex;border:1px solid #888;border-radius:7px;overflow:hidden;vertical-align:middle}
+.tier button,.tier span{border:0;border-right:1px solid #ccc;background:#fff;padding:3px 10px;font-weight:800;font-size:12px}
+.tier>*:last-child{border-right:0}.tier .on{background:#222;color:#fff}
+.tier button[disabled]{cursor:not-allowed;color:#aaa}.tier .on[disabled]{color:#fff;background:#666}
+.due{display:inline-flex;align-items:center;gap:4px;border:1.5px solid #222;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;background:#fff;white-space:nowrap}
+.due.empty{border-style:dashed;color:#555}.due.err{border-color:#DC2626;color:#991B1B}
+.line{display:flex;align-items:center;gap:8px;padding:8px 6px;border-bottom:1px solid #eee;flex-wrap:wrap}
+.line .ttl{flex:1 1 220px;min-width:0}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#555}
+.inp{border:1px solid #888;border-radius:7px;padding:6px 8px;font-size:13px;background:#fff;width:100%;font-family:inherit}
+textarea.inp{min-height:56px;resize:vertical}
+.togl{display:inline-flex;align-items:center;gap:4px;border:1.5px solid #222;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700;background:#fff}
+.togl.on{background:#222;color:#fff}.togl[disabled]{border-color:#bbb;color:#aaa;cursor:not-allowed}.togl.on[disabled]{background:#666;color:#fff}
+.pct{font-size:11px;color:#555;white-space:nowrap}
+table{width:100%;border-collapse:collapse}th{font-size:11px;color:#777;text-align:left;font-weight:600;padding:6px 8px;border-bottom:1px solid #ccc}
+td{padding:7px 8px;border-bottom:1px solid #eee;font-size:13px;vertical-align:top}td.n,th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tblwrap{overflow-x:auto}
+.calwrap{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:10px;align-items:start}
+.cal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) minmax(0,.55fr) minmax(0,.55fr);border:1px solid #ccc;border-radius:10px;background:#fff;overflow:hidden}
+.cal .dh{font-size:11px;color:#777;font-weight:700;padding:5px 8px;border-bottom:1px solid #ccc;background:#fafafa}
+.day{min-height:118px;border-right:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6;padding:4px 5px;min-width:0;position:relative}
+.day:nth-child(7n){border-right:0}.day.out{background:#f7f7f7;color:#aaa}.day.we{background:#fbfbfb}
+.day.today{box-shadow:inset 0 0 0 2px #222}.day.drop{background:#eef2ff;box-shadow:inset 0 0 0 2px #1D4ED8}
+.dn{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;margin-bottom:3px}
+.load{margin-left:auto;font-size:10px;color:#666;font-weight:600;white-space:nowrap}
+.mtg{font-size:9px;font-weight:800;color:#fff;background:#555;border-radius:3px;padding:0 4px}
+.cc{display:flex;align-items:center;gap:4px;width:100%;border:1px solid #9a9a9a;border-radius:6px;padding:2px 5px;font-size:11px;margin-bottom:3px;white-space:nowrap;overflow:hidden;min-width:0;line-height:15px;text-align:left}
+.cc .st{font-weight:700;flex:none}.cc .t{flex:none;font-weight:800;border:1px solid currentColor;border-radius:3px;padding:0 3px;font-size:10px;line-height:12px}
+.cc .w{overflow:hidden;text-overflow:ellipsis;min-width:0;color:#222}
+.cc.sel{outline:2.5px solid #222;outline-offset:1px}.cc.req{border-style:dashed!important}.cc[draggable=true]{cursor:grab}
+.wk .cc{white-space:normal;align-items:flex-start}.wk .cc .w{overflow:visible}
+.side{background:#fff;border:1px solid #aaa;border-radius:10px;padding:12px;min-width:0;box-shadow:-6px 0 18px rgba(0,0,0,.06)}
+.kv{display:grid;grid-template-columns:90px minmax(0,1fr);gap:5px 8px;font-size:12px;margin:8px 0}.kv>div:nth-child(odd){color:#777}
+.sec{font-size:11px;font-weight:800;letter-spacing:.06em;color:#555;text-transform:uppercase;margin:12px 0 5px}
+.tl{border-left:2px solid #ddd;margin-left:5px;padding-left:10px}.tl div{font-size:12px;margin-bottom:5px;position:relative}
+.tl div:before{content:"";position:absolute;left:-15px;top:5px;width:8px;height:8px;border-radius:50%;background:#999}
+.role{border:1px solid #ddd;border-radius:8px;padding:8px;margin-top:6px}.rolet{font-size:11px;font-weight:800;margin-bottom:5px}
+.acts{display:flex;gap:5px;flex-wrap:wrap}
+.cost{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #ccc;border-radius:8px;text-align:center;font-size:11px}
+.cost>div{padding:6px;border-right:1px solid #eee}.cost>div:last-child{border:0}.cost b{font-size:15px;display:block}
+.strip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid #ccc;border-radius:10px;background:#fff;margin-top:8px}
+.strip>div{padding:7px 10px;border-right:1px solid #e3e3e3;min-width:0}.strip>div:last-child{border:0}.strip b{display:block;font-size:15px}.strip small{color:#777;font-size:11px}
+.perf{display:grid;grid-template-columns:270px minmax(0,1fr);border:1px solid #ccc;border-radius:10px;background:#fff;margin-top:8px}
+.perf>div{padding:8px 12px;min-width:0}.perf>div:first-child{border-right:1px solid #e3e3e3;display:flex;gap:10px;align-items:center}
+.ov{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.25);display:none}.ov.show{display:block}
+.pop{position:fixed;z-index:61;background:#fff;border:1px solid #888;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.2);padding:10px;width:306px;display:none}.pop.show{display:block}
+.mini{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-size:12px;text-align:center}
+.mini .h{font-size:10px;color:#888;font-weight:700}
+.mini button{height:36px;border-radius:7px;border:1px solid transparent;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0}
+.mini button:hover:not([disabled]){border-color:#222}
+.mini button[disabled]{color:#bbb;text-decoration:line-through;cursor:not-allowed}
+.mini .out{color:#aaa}.mini .tod{border-color:#222;font-weight:800}.mini .nm{background:#eee;font-weight:800}.mini .pick{background:#222!important;color:#fff;font-weight:800}
+.dots{display:flex;gap:2px;height:5px;margin-top:1px}.dots i{width:4px;height:4px;border-radius:50%;background:#555;display:block}.pick .dots i{background:#fff}
+.qp{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0}.qp button{border:1px solid #888;border-radius:999px;padding:3px 9px;font-size:11.5px;background:#fff}
+.warn{border:1.5px solid #555;border-radius:7px;padding:5px 7px;font-size:11px;background:#fafafa;margin:4px 0}
+.modal{position:fixed;z-index:62;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,94vw);max-height:90vh;overflow:auto;background:#fff;border:1px solid #888;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.25);padding:14px;display:none}.modal.show{display:block}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#222;color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;z-index:70;display:none;max-width:90vw}.toast.show{display:block}
+.try{background:#fff;border-bottom:1px solid #ccc;font-size:12px}
+.try header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 14px;font-weight:800}
+.try ol{margin:0;padding:2px 14px 8px;list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px 16px}.try li{min-width:0}.try label{display:flex;gap:6px;align-items:flex-start}
+.try.min ol{display:none}
+.fb{font-weight:400;color:#444;font-size:11.5px}
+.mw{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.mwcol{border:1px solid #e3e3e3;border-radius:8px;padding:8px;background:#fafafa;min-width:0}
+.mwcard{border:1px solid #ccc;border-radius:8px;padding:7px;margin-bottom:6px;background:#fff}
+.settingsrow{display:grid;grid-template-columns:240px minmax(0,1fr);gap:12px;padding:14px;border-bottom:1px solid #eee}
+.agenda{display:none}.mdots{display:none}
+.pad{height:20px}
+@media (max-width:760px){
+ .wrap{padding:8px}.top{padding:6px 8px;gap:6px}.tabs{padding:6px 8px 0}.tabs button{padding:6px 8px;font-size:12px}
+ .h1{font-size:17px}.calwrap{grid-template-columns:minmax(0,1fr)}
+ .cal{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+ .day{min-height:54px;padding:2px}.day .cc,.day .load{display:none}.day .dn{font-size:11px}
+ .mdots{display:flex;flex-wrap:wrap;gap:2px}.mdots i{width:13px;height:13px;border-radius:3px;border:1px solid;font-size:8px;font-style:normal;font-weight:800;line-height:11px;text-align:center}
+ .agenda{display:block}
+ .side{position:fixed;left:0;right:0;bottom:0;max-height:82vh;overflow:auto;z-index:55;border-radius:14px 14px 0 0}
+ .side.empty{display:none}
+ .strip{grid-template-columns:repeat(2,minmax(0,1fr))}.strip>div{border-bottom:1px solid #eee}
+ .perf{grid-template-columns:minmax(0,1fr)}.perf>div:first-child{border-right:0;border-bottom:1px solid #eee}
+ .mw{grid-template-columns:minmax(0,1fr)}.settingsrow{grid-template-columns:minmax(0,1fr)}
+ .pop{left:0!important;right:0;bottom:0;top:auto!important;width:auto;border-radius:16px 16px 0 0;padding:12px;max-height:90vh;overflow:auto}
+ .mini button{height:42px}
+ .try ol{grid-template-columns:minmax(0,1fr)}.try header{padding:6px 8px}
+ .hidephone{display:none!important}
+}
+</style></head>
+<body>
+<div class="banner" id="banner">PROTOTYPE · example data · nothing is saved to Innovatech PM</div>
+<div class="top">
+ <span class="logo">INNOVATECH PM</span><span class="chip d">Riverside Medical (example)</span>
+ <span style="flex:1"></span>
+ <span class="ctl">View as <span class="seg" id="roleSeg"></span></span>
+ <span class="ctl">Owner acceptance <span class="seg" id="accSeg"></span></span>
+ <button class="btn" id="resetBtn" data-act="reset">↺ Reset demo</button>
+</div>
+<div class="tabs" id="tabs"></div>
+<div class="try" id="try"></div>
+<div class="wrap" id="main"></div>
+<div class="pad"></div>
+<div class="ov" id="ov" data-act="closeOverlay"></div>
+<div class="pop" id="pop" role="dialog" aria-label="Pick a due date"></div>
+<div class="modal" id="modal" role="dialog"></div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(function(){
+"use strict";
+var KEY="innovatech-pm-commitment-prototype-v1";
+var TODAY="2026-10-20", NEXT_MTG="2026-10-27";
+var MTGS=["2026-09-29","2026-10-06","2026-10-13","2026-10-20","2026-10-27","2026-11-03"];
+var PEOPLE=[
+ {id:"dana",name:"Dana",role:"Engineering Manager",base:14000,pr:[9,9,0,0,0]},
+ {id:"luis",name:"Luis",role:"Lead Detailer",base:12000,pr:[9,8,1,0,6000]},
+ {id:"priya",name:"Priya",role:"Project Engineer",base:12000,pr:[8,8,0,0,0]},
+ {id:"marcus",name:"Marcus",role:"Checker",base:11000,pr:[8,6,1,1,55000]},
+ {id:"tasha",name:"Tasha",role:"Senior Detailer",base:10000,pr:[8,7,0,1,20000]},
+ {id:"ray",name:"Ray",role:"Detailer I",base:10000,pr:[8,7,1,0,5000]},
+ {id:"kim",name:"Kim",role:"Design Engineer",base:9000,pr:[8,8,0,0,0]},
+ {id:"jen",name:"Jen",role:"BIM Coordinator",base:9000,pr:[8,7,1,0,4500]},
+ {id:"omar",name:"Omar",role:"Detailer II",base:8000,pr:[7,6,0,1,16000]},
+ {id:"sam",name:"Sam",role:"Drafter",base:5000,pr:[7,6,1,0,2500]}];
+var PBY={};PEOPLE.forEach(function(p){PBY[p.id]=p;});
+var ROLES={owner:{label:"Owner (Luis)",person:"luis"},chair:{label:"Chair (Dana)",person:"dana"},pm:{label:"PM",person:null}};
+var GUIDE={S:"S · a few hours, nobody blocked",M:"M · a day or more, or someone is waiting on it",L:"L · puts a milestone or a downstream team at risk"};
+var TW={S:1,M:2,L:4};
+var ST={open:["c-open","○ Open"],done_pending:["c-wait","… Confirm"],met:["c-met","✓ Met"],late:["c-late","◷ Late"],missed:["c-miss","✕ Missed"],excused:["c-gray","– Excused"]};
+var TABS=[["meeting","Meeting · Eng Weekly"],["calendar","Calendar"],["myweek","My week (Home)"],["settings","Settings"]];
+function D(s){var a=s.split("-");return new Date(Date.UTC(+a[0],+a[1]-1,+a[2]));}
+function S(d){return d.toISOString().slice(0,10);}
+function add(s,n){var d=D(s);d.setUTCDate(d.getUTCDate()+n);return S(d);}
+function dow(s){return (D(s).getUTCDay()+6)%7;}
+var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],DAY=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+function fmt(s){if(!s)return"";var d=D(s);return DAY[dow(s)]+" "+MON[d.getUTCMonth()]+" "+d.getUTCDate();}
+function fmtS(s){var d=D(s);return MON[d.getUTCMonth()]+" "+d.getUTCDate();}
+function monthStart(s){return s.slice(0,8)+"01";}
+function daysIn(ms){var d=D(ms);return new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,0)).getUTCDate();}
+function nextDow(from,target){for(var i=0;i<8;i++){var x=add(from,i);if(dow(x)===target)return x;}return from;}
+function pad2(n){n=String(n);return n.length<2?"0"+n:n;}
+function parseDate(txt){
+ var t=(txt||"").trim().toLowerCase();if(!t)return null;
+ if(t==="today")return TODAY;if(t==="tomorrow"||t==="tmrw")return add(TODAY,1);
+ if(/^next ?(mtg|meeting)$/.test(t))return NEXT_MTG;
+ var m=t.match(/^\+(\d+)\s*(d|day|days|w|wk|week|weeks)?$/);if(m){var n=+m[1];return add(TODAY,/^w/.test(m[2]||"d")?n*7:n);}
+ var names=["mon","tue","wed","thu","fri","sat","sun"];
+ for(var i=0;i<7;i++){if(/^[a-z]+$/.test(t)&&t.indexOf(names[i])===0)return nextDow(add(TODAY,1),i);}
+ m=t.match(/^([a-z]{3})[a-z]*\.?\s+(\d{1,2})$/);if(m){var mi=MON.map(function(x){return x.toLowerCase();}).indexOf(m[1]);if(mi>=0)return "2026-"+pad2(mi+1)+"-"+pad2(+m[2]);}
+ m=t.match(/^(\d{1,2})\/(\d{1,2})$/);if(m)return "2026-"+pad2(+m[1])+"-"+pad2(+m[2]);
+ return null;}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function money(c){var neg=c<0;c=Math.abs(Math.round(c));var s=(c/100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,",");return (neg?"−$":"$")+s;}
+function lastMtgBefore(due){var m=MTGS[0];for(var i=0;i<MTGS.length;i++){if(MTGS[i]<due)m=MTGS[i];}return m;}
+function mkItem(id,owner,tier,due,state,title){var lm=lastMtgBefore(due);
+ var o={id:id,owner:owner,tier:tier,due:due,state:state,title:title,doneWhen:"Stamped PDF in the project folder (example)",meeting:"Eng Weekly · "+fmt(lm),bp:TW[tier],accepted:false,concerns:[],history:[],request:null,ownerDoneAt:null};
+ o.history.push({t:"Committed · tier "+tier,by:"Dana (chair)",at:fmtS(lm)},{t:"Locked: counts from here",by:"Dana",at:fmtS(lm)});
+ if(state==="met"){o.ownerDoneAt=due;o.history.push({t:"Checked off, confirmed ✓ Met",by:"Dana",at:fmtS(due)});}
+ if(state==="late"){o.ownerDoneAt=add(due,1);o.history.push({t:"Checked off after due, confirmed ◷ Met late",by:"Dana",at:fmtS(add(due,1))});}
+ if(state==="missed")o.history.push({t:"Confirmed ✕ Missed",by:"Dana",at:fmtS(add(due,1))});
+ if(state==="excused")o.history.push({t:"Excused by PM: vendor file delay",by:"PM",at:fmtS(due)});
+ if(state==="done_pending"){o.ownerDoneAt=TODAY;o.history.push({t:"Checked off by owner",by:PBY[owner].name,at:fmtS(TODAY)});}
+ return o;}
+function seed(){
+ var L=[["luis","S","2026-09-29","met","Bolt list rev C"],["priya","M","2026-09-30","met","Grid check L1"],["priya","M","2026-10-01","met","Beam schedule rev A"],["ray","S","2026-10-01","met","Anchor bolt RFI log"],
+ ["luis","L","2026-10-02","met","L1 erection drawings"],["omar","S","2026-10-02","missed","Embed list L2"],["kim","S","2026-10-05","met","Canopy calc check"],["dana","M","2026-10-06","met","Shop schedule sync"],["tasha","M","2026-10-06","late","Stair 2 details"],
+ ["jen","S","2026-10-07","met","Clash report L2"],["marcus","L","2026-10-08","missed","Stair 1 check package"],["sam","S","2026-10-08","met","Title block update"],["priya","S","2026-10-09","met","Connection list"],["luis","M","2026-10-09","met","Ladder details"],["ray","M","2026-10-09","late","Rail details"],
+ ["omar","M","2026-10-12","met","Embed plate L3"],["kim","M","2026-10-13","met","Canopy connections"],["tasha","S","2026-10-13","excused","Vendor CAD import"],["jen","M","2026-10-14","met","Clash report L3"],["luis","S","2026-10-15","met","Anchor bolt plan"],["dana","L","2026-10-15","met","Erection seq. review"],
+ ["priya","M","2026-10-16","met","L2 beam drawings"],["marcus","L","2026-10-16","missed","Re-check stair 1"],["sam","M","2026-10-16","late","Misc metals list"],["kim","M","2026-10-19","met","Canopy calcs"],["jen","M","2026-10-19","met","Clash L3 vs steel"],
+ ["marcus","M","2026-10-19","open","Check L3 beams"],["ray","S","2026-10-16","open","Grid dims to GC"],
+ ["omar","M","2026-10-20","done_pending","Embed plate L4"],["tasha","S","2026-10-20","done_pending","Misc metals rev B"],["luis","S","2026-10-20","done_pending","Anchor bolt plan rev"],
+ ["priya","S","2026-10-21","open","Deck edge plan"],["kim","M","2026-10-22","open","Canopy pkg to checker"],["luis","S","2026-10-22","open","Bolt list rev D"],["sam","S","2026-10-22","open","Rev B title sheets"],
+ ["luis","M","2026-10-23","open","Detail sheet index"],["jen","S","2026-10-23","open","Clash L4 run"],["dana","M","2026-10-23","open","Vendor pick weights"],["omar","S","2026-10-23","open","Embed list L5"],
+ ["kim","S","2026-10-26","open","Checker comments log"],["tasha","M","2026-10-27","open","Stair 3 details"],["marcus","M","2026-10-27","open","Check L4 beams"],["luis","L","2026-10-28","open","Crane pick plan"],
+ ["priya","L","2026-10-29","open","L3 connection pkg"],["ray","M","2026-10-30","open","Rail details L3"],["omar","M","2026-10-30","open","Embed plate L5"],["luis","M","2026-11-04","open","Shop drawing log L4"]];
+ var items=L.map(function(r,i){return mkItem("c"+(i+1),r[0],r[1],r[2],r[3],r[4]);});
+ var c=items[35];c.concerns.push({text:"Needs vendor pick weights first",by:"Luis",at:"Oct 20"});c.history.push({t:"Concern raised: “Needs vendor pick weights first”",by:"Luis",at:"Oct 20"});
+ return {v:1,role:"chair",tab:"meeting",stack:[],accept:"OPTIONAL",bp:{S:1,M:2,L:4},
+  settingsLog:[{at:"Oct 14",by:"PM (example)",t:"Owner acceptance: Optional (default)"},{at:"Oct 14",by:"PM (example)",t:"Tier weights 1 / 2 / 4% confirmed · note “kickoff”"}],
+  items:items,seq:200,
+  meeting:{locked:false,lockedAt:null,wrapOpen:false,tryLock:false,lines:[
+   {id:"l1",owner:"kim",title:"Canopy connection calc package to checker",commit:true,tier:"S",due:"2026-10-26",itemId:null},
+   {id:"l2",owner:"luis",title:"Update erection sequence sheet E-4",commit:true,tier:"M",due:"2026-10-23",itemId:null},
+   {id:"l3",owner:"jen",title:"Run clash report L4 vs steel",commit:true,tier:null,due:null,itemId:null},
+   {id:"l4",owner:"ray",title:"Ask GC for revised grid dims",commit:false,tier:null,due:"2026-10-21",itemId:null}]},
+  cal:{month:"2026-10-01",view:"month",weekStart:null,person:"all",status:"all",mine:false,sel:null,phoneDay:TODAY},
+  tried:{},tryMin:window.innerWidth<=760,remember:true};}
+var st;
+function load(){try{var raw=window.localStorage&&localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);if(o&&o.v===1&&o.items)return o;}}catch(e){}return seed();}
+function save(){try{if(!st.remember){localStorage.removeItem(KEY);return;}localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+st=load();
+function rolePerson(){return ROLES[st.role].person;}
+function canChair(){return st.role==="chair"||st.role==="pm";}
+function find(id){for(var i=0;i<st.items.length;i++)if(st.items[i].id===id)return st.items[i];return null;}
+function lineById(id){for(var i=0;i<st.meeting.lines.length;i++)if(st.meeting.lines[i].id===id)return st.meeting.lines[i];return null;}
+function stats(pid){var p=PBY[pid],c=p.pr[0],o=p.pr[1],ded=p.pr[4];
+ st.items.forEach(function(x){if(x.owner!==pid)return;var cut=p.base*100*x.bp/100;
+  if(x.state==="met"){c++;o++;}else if(x.state==="late"){c++;ded+=cut/2;}else if(x.state==="missed"){c++;ded+=cut;}});
+ ded=Math.min(ded,p.base*100);return {counted:c,ontime:o,pct:c?o/c*100:0,dedC:ded,balC:p.base*100-ded};}
+function team(upto){var c=0,o=0;PEOPLE.forEach(function(p){c+=p.pr[0];o+=p.pr[1];});
+ st.items.forEach(function(x){if(upto&&x.due>upto)return;if(x.state==="met"){c++;o++;}else if(x.state==="late"||x.state==="missed")c++;});return {c:c,o:o,pct:c?o/c*100:0};}
+function openBal(){var t=0;PEOPLE.forEach(function(p){t+=stats(p.id).dedC;});return t;}
+function band(p){return p>=85?["pg","✓ On target","#15803D"]:p>=70?["pa","! Watch","#B45309"]:["pr","✕ Below","#DC2626"];}
+function pastDue(x){return x.due<TODAY;}
+function ownerLoad(pid,day,exceptId){var n=st.items.filter(function(x){return x.owner===pid&&x.due===day&&x.id!==exceptId&&(x.state==="open"||x.state==="done_pending");}).length;
+ if(!st.meeting.locked)n+=st.meeting.lines.filter(function(l){return l.commit&&l.owner===pid&&l.due===day&&l.id!==exceptId;}).length;return n;}
+function toast(t){var el=document.getElementById("toast");el.textContent=t;el.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(function(){el.classList.remove("show");},3200);}
+function mark(k){st.tried[k]=true;}
+function backBtn(){return '<button class="btn back" data-act="back"'+(st.stack.length?"":' disabled title="No previous tab"')+'>‹ Back</button>';}
+function chipHtml(x){var s=ST[x.state],cls="cc "+s[0]+(x.request?" req":"")+(st.cal.sel===x.id?" sel":"");
+ var drag=(x.state==="open"&&!pastDue(x)&&!x.request)?' draggable="true"':"";
+ return '<button class="'+cls+'" data-act="openItem" data-id="'+x.id+'"'+drag+' title="'+esc(s[1]+" · "+x.tier+" · "+PBY[x.owner].name+" · "+x.title)+'"><span class="st">'+s[1]+'</span><span class="t">'+x.tier+'</span>'+(x.request?'<span class="st">⇄</span>':"")+'<span class="w">'+esc(PBY[x.owner].name+" · "+x.title)+'</span></button>';}
+var TRY=[["meet","As Chair (Dana): on the meeting page add “[ ] @Luis update erection sheet due fri”, turn on Commit and tap a tier (hover or long-press for its guide)."],
+ ["pick","Tap a due chip: try a quick pick, see the dots, and hover or open Fri Oct 23 for Luis to see the workload warning."],
+ ["lock","Tap 🔒 Lock commitments and read the wrap-up card."],
+ ["check","Switch to Owner (Luis) → My week: check off an item. It turns blue “… Confirm”."],
+ ["confirm","Switch to Chair → Calendar: open that chip and confirm ✓ Met. Then open Marcus’s overdue “Check L3 beams” (Oct 19), confirm ✕ Missed and watch team %, ring and bank change."],
+ ["move","As Owner, drag one of your future chips to another day (or tap ⏱ Need more time). Switch to Chair and Approve: the chip moves."],
+ ["acc","Flip Owner acceptance to Off: the optional Accept button disappears."],
+ ["pct","As PM → Settings: change the S/M/L % with a note. Commitments locked after that use the new rate."]];
+function renderChrome(){
+ document.getElementById("roleSeg").innerHTML=Object.keys(ROLES).map(function(k){return '<button class="'+(st.role===k?"on":"")+'" data-act="role" data-v="'+k+'">'+ROLES[k].label+'</button>';}).join("");
+ document.getElementById("accSeg").innerHTML=["OPTIONAL","OFF"].map(function(k){return '<button class="'+(st.accept===k?"on":"")+'" data-act="accept" data-v="'+k+'">'+(k==="OPTIONAL"?"Optional":"Off")+'</button>';}).join("");
+ document.getElementById("tabs").innerHTML=TABS.map(function(t){return '<button class="'+(st.tab===t[0]?"on":"")+'" data-act="tab" data-v="'+t[0]+'">'+t[1]+'</button>';}).join("");
+ var done=TRY.filter(function(i){return st.tried[i[0]];}).length,el=document.getElementById("try");el.className="try"+(st.tryMin?" min":"");
+ el.innerHTML='<header>What to try <span class="note">('+done+'/'+TRY.length+' · ticks itself as you go)</span><button class="btn sm" data-act="tryMin">'+(st.tryMin?"Show checklist":"Hide")+'</button><span style="flex:1"></span><span class="fb"><b>Send feedback:</b> reply to Jakob’s email with what confused you, what you’d change and what’s missing. Nothing here is sent anywhere. <label style="display:inline-flex;gap:4px;align-items:center"><input type="checkbox" data-act="remember"'+(st.remember?" checked":"")+'> Remember my demo on this device</label></span></header><ol>'+
+ TRY.map(function(i){return '<li><label><input type="checkbox" data-act="tryChk" data-v="'+i[0]+'"'+(st.tried[i[0]]?" checked":"")+'><span>'+esc(i[1])+'</span></label></li>';}).join("")+
+ '</ol>';}
+function render(){renderChrome();document.getElementById("main").innerHTML=st.tab==="meeting"?vMeeting():st.tab==="calendar"?vCalendar():st.tab==="myweek"?vMyWeek():vSettings();save();}
+function go(tab){if(tab===st.tab){render();return;}st.stack.push(st.tab);st.tab=tab;closeAll();render();window.scrollTo(0,0);}
+function back(){if(!st.stack.length){toast("No previous tab.");return;}st.tab=st.stack.pop();closeAll();render();window.scrollTo(0,0);}
+/* ---------- Meeting ---------- */
+function vMeeting(){var M=st.meeting,ch=canChair();
+ var lines=M.lines.map(function(l){var it=l.itemId?find(l.itemId):null,lk=M.locked&&l.commit;
+  var muted=(!ch||M.locked)?" disabled":"",why=ch?"":' title="Only the chair or PM can commit, set tier or lock"';
+  var tierH='<span class="tier" role="radiogroup" aria-label="Tier">'+["S","M","L"].map(function(t){var rate=lk&&it?it.bp:st.bp[t];if(lk&&it&&t!==it.tier)rate=st.bp[t];
+   return '<button class="'+(l.tier===t?"on":"")+'" data-act="tier" data-id="'+l.id+'" data-v="'+t+'" title="'+GUIDE[t]+" · miss = "+rate+'% of base"'+((!ch||lk)?" disabled":"")+'>'+t+'</button>';}).join("")+'</span>';
+  var dueCls="due"+(l.due?"":" empty")+(M.tryLock&&l.commit&&!l.due?" err":"");
+  var dueTxt=lk?("🔒 "+fmt(it.due)+(it.request?" · ⇄ pending":"")):(l.due?"📅 "+fmt(l.due)+" ▾":"📅 ＋ Due");
+  var g=l.commit&&l.tier?'<div class="why" style="flex-basis:100%;padding-left:28px">'+GUIDE[l.tier]+' · miss = '+(lk?it.bp:st.bp[l.tier])+'% of base · late = half</div>':"";
+  var sc=lk?'<span class="chip '+ST[it.state][0]+'">'+ST[it.state][1]+'</span>':"";
+  var need=M.tryLock&&l.commit&&(!l.tier||!l.due)?'<span class="pct" style="color:#991B1B">needs tier + due</span>':"";
+  return '<div class="line" data-line="'+l.id+'"><span class="mono">[ ]</span><b>@'+esc(PBY[l.owner].name)+'</b><span class="ttl">'+esc(l.title)+'</span>'+
+   (l.commit?'<button class="togl on" data-act="commit" data-id="'+l.id+'"'+muted+why+'>Commit ✓</button>'+tierH:'<button class="togl" data-act="commit" data-id="'+l.id+'"'+muted+why+'>+ Commit</button>')+
+   '<button class="'+dueCls+'" data-act="due" data-id="'+l.id+'">'+dueTxt+'</button>'+sc+need+g+'</div>';}).join("");
+ var bar=M.locked?'<div class="row" style="margin-top:8px"><span class="chip k">🔒 Locked '+esc(M.lockedAt)+'</span><span class="note">Commitments count now. Tap a 🔒 due chip to ask for more time.</span>'+(M.wrapOpen?"":'<button class="btn sm" data-act="wrap">Show wrap-up</button>')+'</div>'
+  :'<div class="row" style="margin-top:10px;justify-content:flex-end"><span class="note">The chair reviews who / what / when / tier, then locks. Owner Accept is '+(st.accept==="OPTIONAL"?"optional":"off")+' on this project.</span><button class="btn p" data-act="lock"'+(ch?"":' disabled title="Only the chair or PM can lock"')+'>🔒 Lock commitments</button></div>';
+ return '<div class="row">'+backBtn()+'<span class="crumb">Meetings › Eng Weekly, Riverside (example) › '+fmt(TODAY)+', 2026</span></div>'+
+ '<div class="row" style="margin:6px 0"><div class="h1">Eng Weekly · '+fmt(TODAY)+', 2026</div><span class="chip">chair: Dana (example)</span><span class="chip">LIVE</span><span class="note">next meeting '+fmt(NEXT_MTG)+' · demo clock '+fmt(TODAY)+'</span></div>'+
+ (ch?"":'<div class="anno" style="margin-bottom:8px">Viewing as <b>Owner (Luis)</b>. Commit, tier and Lock belong to the chair, so they are muted here (hover for the reason). After lock, tap your own 🔒 due chip to ask for more time.</div>')+
+ (M.locked&&M.wrapOpen?vWrap():"")+
+ '<div class="card"><div class="row" style="margin-bottom:4px"><b>Capture · Notes</b><span class="note">Type a line like <span class="mono">[ ] @Luis update erection sheet due fri</span> and press Enter. The meeting page shows % of base only, never dollars.</span></div>'+
+ '<div class="row" style="margin:6px 0"><input class="inp" id="lineInput" style="flex:1 1 240px" placeholder="[ ] @Luis update erection sheet due fri"'+(M.locked?" disabled":"")+'><button class="btn" data-act="addLine"'+(M.locked?" disabled":"")+'>Add line</button></div>'+
+ '<div id="lineErr" class="note" style="color:#991B1B"></div>'+lines+bar+'</div>';}
+function vWrap(){var M=st.meeting,rp=rolePerson(),per={},n=0;
+ var rows=M.lines.filter(function(l){return l.commit;}).map(function(l){var it=find(l.itemId),me=it.owner===rp;n++;per[l.owner]=(per[l.owner]||0)+TW[it.tier];
+  var acts=me?'<span class="acts">'+(st.accept==="OPTIONAL"?(it.accepted?'<span class="note">Accepted ✓</span>':'<button class="btn sm" data-act="acceptItem" data-id="'+it.id+'">Accept (optional)</button>'):"")+'<button class="btn sm" data-act="concern" data-id="'+it.id+'">Raise concern</button><button class="btn sm" data-act="nmt" data-id="'+it.id+'">⏱ Need more time</button></span>':'<span class="note">counts</span>';
+  return '<tr'+(me?' style="background:#f3f3f3"':"")+'><td><b>'+esc(PBY[l.owner].name)+'</b> (example)</td><td>'+esc(l.title)+'</td><td class="n">'+fmt(it.due)+'</td><td><span class="tier"><span class="on">'+it.tier+'</span></span></td><td class="n">'+it.bp+'%</td><td>'+acts+'</td></tr>';}).join("");
+ return '<div class="card" style="border:2px solid #222;margin-bottom:10px" id="wrapup"><div class="row"><b style="font-size:16px">Wrap-up · '+n+' commitments locked</b><span class="chip d">Proposal 6</span><span style="flex:1"></span><button class="btn sm" data-act="wrapClose">Done</button></div>'+
+ '<div class="note" style="margin:3px 0 8px">These count now. The chair set each tier at commit. Owner Accept is '+(st.accept==="OPTIONAL"?"optional and never blocks":"off on this project")+'.</div>'+
+ '<div class="tblwrap"><table><tr><th>Who</th><th>Committed to</th><th class="n">By when</th><th>Tier</th><th class="n">Miss = % of base</th><th></th></tr>'+rows+'</table></div>'+
+ '<div class="row" style="margin-top:8px"><span class="note">Load by person (tier pts):</span>'+Object.keys(per).map(function(k){return '<span class="chip">'+PBY[k].name+' · '+per[k]+'pt</span>';}).join("")+'<span style="flex:1"></span><button class="btn sm" data-act="tab" data-v="calendar">Open in calendar ›</button></div></div>';}
+function addLineFromText(txt){var err=document.getElementById("lineErr");err.textContent="";
+ var m=txt.trim().replace(/^\[\s?\]\s*/,"").match(/^@(\w+)\s+(.+)$/);
+ if(!m){err.textContent="Start with an owner, like: [ ] @Luis update erection sheet";return false;}
+ var pid=m[1].toLowerCase();if(!PBY[pid]){err.textContent="No roster member named @"+m[1]+". Example roster: "+PEOPLE.map(function(p){return p.name;}).join(", ")+".";return false;}
+ var title=m[2],due=null,dm=title.match(/\s+due\s+(.+)$/i);
+ if(dm){due=parseDate(dm[1]);if(!due){err.textContent="Couldn’t read the date “"+dm[1]+"”. Try fri, oct 30, +3d or next mtg.";return false;}if(due<TODAY){err.textContent="That date is in the past.";return false;}title=title.slice(0,dm.index);}
+ st.meeting.lines.push({id:"l"+(++st.seq),owner:pid,title:title.charAt(0).toUpperCase()+title.slice(1),commit:false,tier:null,due:due,itemId:null});mark("meet");return true;}
+function lock(){var M=st.meeting;if(M.lines.some(function(l){return l.commit&&(!l.tier||!l.due);})){M.tryLock=true;render();toast("Every Commit line needs a tier and a due date before lock.");return;}
+ if(!M.lines.some(function(l){return l.commit;})){toast("Turn on Commit for at least one line first.");return;}
+ var who=st.role==="pm"?"PM":"Dana (chair)";M.locked=true;M.tryLock=false;M.lockedAt=fmtS(TODAY)+" (demo)";M.wrapOpen=true;
+ M.lines.forEach(function(l){if(!l.commit)return;var id="c"+(++st.seq);
+  st.items.push({id:id,owner:l.owner,tier:l.tier,due:l.due,state:"open",title:l.title,doneWhen:"Done-when line from the meeting (example)",meeting:"Eng Weekly · "+fmt(TODAY),bp:st.bp[l.tier],accepted:false,concerns:[],request:null,ownerDoneAt:null,
+   history:[{t:"Committed · tier "+l.tier,by:who,at:fmtS(TODAY)},{t:"Locked: counts from here (rate "+st.bp[l.tier]+"%)",by:who,at:fmtS(TODAY)}]});l.itemId=id;});
+ mark("lock");render();var w=document.getElementById("wrapup");if(w&&w.scrollIntoView)w.scrollIntoView({block:"start"});}
+/* ---------- Picker ---------- */
+var pk=null;
+function pickerInner(){var owner=pk.owner,v=pk.value,ms=pk.month,start=add(ms,-dow(ms)),ex=pk.mode==="line"?pk.id:pk.itemId,cells="";
+ for(var i=0;i<42;i++){var d=add(start,i),cls=[];if(d.slice(0,7)!==ms.slice(0,7))cls.push("out");if(d===TODAY)cls.push("tod");if(d===NEXT_MTG)cls.push("nm");if(d===v)cls.push("pick");
+  var n=ownerLoad(owner,d,ex),dots="";for(var j=0;j<Math.min(n,3);j++)dots+="<i></i>";
+  cells+='<button class="'+cls.join(" ")+'" data-act="pickDay" data-v="'+d+'"'+(d<TODAY?" disabled":"")+' title="'+fmt(d)+" · "+PBY[owner].name+" has "+n+' due"><span>'+D(d).getUTCDate()+'</span><span class="dots">'+dots+'</span></button>';}
+ var focus=pk.hover||v,wn="";
+ if(focus&&focus>=TODAY){var n2=ownerLoad(owner,focus,ex);if(n2>=2){var light=[],x=add(TODAY,1),guard=0;while(light.length<2&&guard++<60){if(dow(x)<5&&ownerLoad(owner,x,ex)===0)light.push(x);x=add(x,1);}
+  wn='<div class="warn" id="loadWarn">⚠ <b>'+PBY[owner].name+' already has '+n2+' due '+fmt(focus)+'.</b> Lighter: '+light.map(function(l){return '<button class="chip" data-act="pickDay" data-v="'+l+'">'+fmt(l)+' · 0</button>';}).join(" ")+' <span class="chip d">Proposal 3</span><div class="why">Picking a busy day is still allowed.</div></div>';}}
+ var fri=nextDow(add(TODAY,1),4);
+ return '<input class="inp" id="pickType" placeholder="Type a date: thu, oct 30, +3d, next mtg (Enter)" autocomplete="off">'+
+ '<div class="qp"><button data-act="pickDay" data-v="'+NEXT_MTG+'"><b>Next meeting</b> · '+fmtS(NEXT_MTG)+'</button><button data-act="pickDay" data-v="'+fri+'">Fri · '+fmtS(fri)+'</button><button data-act="pickDay" data-v="'+add(TODAY,7)+'">+1 wk · '+fmtS(add(TODAY,7))+'</button><button data-act="pickDay" data-v="'+add(TODAY,14)+'">+2 wk · '+fmtS(add(TODAY,14))+'</button></div>'+wn+
+ '<div class="row" style="margin:4px 0"><button class="btn sm" data-act="pkMonth" data-v="-1" aria-label="Previous month">‹</button><b style="flex:1;text-align:center;font-size:12px">'+MON[D(ms).getUTCMonth()]+' '+ms.slice(0,4)+'</b><button class="btn sm" data-act="pkMonth" data-v="1" aria-label="Next month">›</button></div>'+
+ '<div class="mini">'+DAY.map(function(d){return '<div class="h">'+d[0]+'</div>';}).join("")+cells+'</div>'+
+ '<div class="note" style="margin-top:6px">● '+esc(PBY[owner].name)+'’s commitments · gray = next meeting · outlined = today · past days disabled. '+(pk.mode==="line"?"One tap sets the date and closes.":"Tap the new date.")+'</div>';}
+function renderPicker(){if(!pk)return;if(pk.mode==="line"){document.getElementById("pop").innerHTML='<div class="row" style="margin-bottom:4px"><b>Due date · '+esc(PBY[pk.owner].name)+'</b><span style="flex:1"></span><button class="btn sm" data-act="closeOverlay">Close</button></div>'+pickerInner();}
+ else{var h=document.getElementById("reqPick");if(h)h.innerHTML=pickerInner();}}
+function openPicker(anchor,cfg){pk=cfg;pk.month=monthStart(cfg.value||TODAY);renderPicker();
+ var p=document.getElementById("pop");p.classList.add("show");document.getElementById("ov").classList.add("show");
+ if(window.innerWidth>760&&anchor){var r=anchor.getBoundingClientRect(),left=Math.min(Math.max(8,r.left-60),window.innerWidth-320),top=r.bottom+6;if(top+480>window.innerHeight)top=Math.max(8,window.innerHeight-490);p.style.left=left+"px";p.style.top=top+"px";}
+ mark("pick");}
+function closeAll(){pk=null;md=null;document.getElementById("pop").classList.remove("show");document.getElementById("ov").classList.remove("show");document.getElementById("modal").classList.remove("show");}
+function pickDay(d){if(!pk||d<TODAY)return;if(pk.mode==="line"){var l=lineById(pk.id);l.due=d;closeAll();render();toast("Due set: "+fmt(d));}else{pk.value=d;md.state.date=d;document.getElementById("reqDate").textContent=fmt(d);renderPicker();}}
+/* ---------- Modals ---------- */
+var md=null;
+function openModal(html,cfg){md=cfg||{};var m=document.getElementById("modal");m.innerHTML=html;m.classList.add("show");document.getElementById("ov").classList.add("show");}
+function reqModal(it,preset){var canSend=rolePerson()===it.owner||canChair();
+ openModal('<div class="row"><b style="font-size:15px">⏱ Need more time</b><span class="chip d">Proposal 1</span><span style="flex:1"></span><button class="btn sm" data-act="closeOverlay">✕</button></div>'+
+ '<div class="note" style="margin:4px 0 8px">A renegotiation request. The chip stays on '+fmt(it.due)+' until the chair or PM approves. Approved before due = no deduction. Logged either way.</div>'+
+ '<div class="kv"><div>Item</div><div><b>'+it.tier+'</b> '+esc(PBY[it.owner].name+" · "+it.title)+'</div><div>Due now</div><div>'+fmt(it.due)+'</div><div>New date *</div><div><b id="reqDate">'+(preset?fmt(preset):"pick below")+'</b></div></div>'+
+ '<div id="reqPick"></div><label class="note" for="reqReason">Reason *</label><textarea class="inp" id="reqReason" placeholder="e.g. Vendor pick weights arrive Oct 27 (example)"></textarea>'+
+ (canSend?"":'<div class="why" style="margin-top:4px">Only the owner ('+PBY[it.owner].name+') or the chair/PM can file this. Switch role to try it.</div>')+
+ '<div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn" data-act="closeOverlay">Cancel</button><button class="btn p" data-act="sendReq" data-id="'+it.id+'"'+(canSend?"":" disabled")+'>Send request</button></div>',{state:{date:preset||null}});
+ pk={mode:"req",owner:it.owner,itemId:it.id,value:preset||null,month:monthStart(preset||TODAY)};renderPicker();}
+function reasonModal(title,act,id,ph){openModal('<div class="row"><b style="font-size:15px">'+esc(title)+'</b><span style="flex:1"></span><button class="btn sm" data-act="closeOverlay">✕</button></div><label class="note" for="reasonTxt">Reason *</label><textarea class="inp" id="reasonTxt" placeholder="'+esc(ph)+'"></textarea><div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn" data-act="closeOverlay">Cancel</button><button class="btn p" data-act="'+act+'" data-id="'+id+'">Save</button></div>');}
+/* ---------- Calendar ---------- */
+function visibleItems(){var c=st.cal,rp=rolePerson();return st.items.filter(function(x){if(c.mine&&x.owner!==rp)return false;if(c.person!=="all"&&x.owner!==c.person)return false;if(c.status!=="all"&&x.state!==c.status)return false;return true;});}
+function loadOf(list){var n=list.length,p=0;list.forEach(function(x){p+=TW[x.tier];});return n?'<span class="load" title="'+n+' due · '+p+' tier pts (S1 M2 L4)">'+n+' · '+p+'pt'+(p>=8?' · HEAVY':'')+'</span>':"";}
+function weekStart(){return st.cal.weekStart||add(TODAY,-dow(TODAY));}
+function vCalendar(){var c=st.cal,vis=visibleItems(),rp=rolePerson(),grid;
+ if(c.view==="month"){var ms=c.month,start=add(ms,-dow(ms)),weeks=Math.ceil((dow(ms)+daysIn(ms))/7);
+  grid='<div class="cal">'+DAY.map(function(d){return '<div class="dh">'+d.toUpperCase()+'</div>';}).join("");
+  for(var i=0;i<weeks*7;i++){var d=add(start,i),its=vis.filter(function(x){return x.due===d;});
+   var cls="day"+(d.slice(0,7)!==ms.slice(0,7)?" out":"")+(dow(d)>=5?" we":"")+(d===TODAY?" today":"");
+   grid+='<div class="'+cls+'" data-day="'+d+'" data-act="phoneDay" data-v="'+d+'"><div class="dn">'+D(d).getUTCDate()+(MTGS.indexOf(d)>=0?'<span class="mtg">MTG</span>':"")+(d===TODAY?'<span class="chip k" style="font-size:9px;padding:0 4px">TODAY</span>':"")+loadOf(its)+'</div>'+
+    '<div class="mdots">'+its.map(function(x){return '<i class="'+ST[x.state][0]+'">'+x.tier+'</i>';}).join("")+'</div>'+its.map(chipHtml).join("")+'</div>';}
+  grid+='</div>';
+  var pd=c.phoneDay,pits=vis.filter(function(x){return x.due===pd;});
+  grid+='<div class="agenda card" style="margin-top:8px"><b>'+fmt(pd)+'</b> <span class="note">tap a day above to list it here</span><div style="margin-top:6px">'+(pits.map(chipHtml).join("")||'<div class="note">Nothing due.</div>')+'</div></div>';
+ }else{var ws=weekStart();
+  grid='<div class="cal wk" style="grid-template-columns:repeat(5,minmax(0,1fr)) minmax(0,.7fr) minmax(0,.7fr)">'+[0,1,2,3,4,5,6].map(function(i){return '<div class="dh">'+fmt(add(ws,i)).toUpperCase()+'</div>';}).join("");
+  for(var k=0;k<7;k++){var d2=add(ws,k),its2=vis.filter(function(x){return x.due===d2;});
+   grid+='<div class="day'+(d2===TODAY?" today":"")+(dow(d2)>=5?" we":"")+'" data-day="'+d2+'" style="min-height:220px"><div class="dn"><span class="mdots-none">'+fmtS(d2)+'</span>'+(MTGS.indexOf(d2)>=0?'<span class="mtg">MTG</span>':"")+loadOf(its2)+'</div>'+
+    '<div class="mdots">'+its2.map(function(x){return '<i class="'+ST[x.state][0]+'">'+x.tier+'</i>';}).join("")+'</div>'+its2.map(chipHtml).join("")+'</div>';}
+  grid+='</div><div class="agenda card" style="margin-top:8px">'+[0,1,2,3,4,5,6].map(function(i){var d3=add(ws,i),its3=vis.filter(function(x){return x.due===d3;});return '<div style="margin-bottom:6px"><b>'+fmt(d3)+'</b>'+(its3.map(chipHtml).join("")||'<div class="note">—</div>')+'</div>';}).join("")+'</div>';}
+ var t=team(),tb=band(t.pct),oct=st.items.filter(function(x){return x.due.slice(0,7)==="2026-10";}),cnt=function(s){return oct.filter(function(x){return x.state===s;}).length;};
+ var strip='<div class="strip"><div><small>Team met % (project to date)</small><b id="teamPct">'+t.pct.toFixed(1)+'% <span class="pill '+tb[0]+'" style="font-size:11px">'+tb[1]+'</span></b></div>'+
+  '<div><small>October due</small><b>'+oct.length+'</b><span class="note">'+cnt("met")+' met · '+cnt("late")+' late · '+cnt("missed")+' missed</span></div>'+
+  '<div><small>Awaiting confirm</small><b>'+st.items.filter(function(x){return x.state==="done_pending";}).length+'</b></div>'+
+  '<div><small>Overdue, not confirmed</small><b>'+st.items.filter(function(x){return x.state==="open"&&pastDue(x);}).length+'</b></div>'+
+  '<div><small>Date change requests</small><b id="reqCount">'+st.items.filter(function(x){return x.request;}).length+'</b></div>'+
+  '<div><small>Team open balance</small><b id="openBal">'+money(openBal())+'</b><span class="note">provisional</span></div></div>';
+ var who=rp||"marcus",ps=stats(who),pb=band(ps.pct),circ=2*Math.PI*26,dash=(Math.max(0,Math.min(100,ps.pct))/100*circ).toFixed(1);
+ var perf='<div class="perf"><div><svg width="66" height="66" viewBox="0 0 64 64" aria-label="on-time ring"><circle cx="32" cy="32" r="26" fill="none" stroke="#e5e5e5" stroke-width="8"/><circle cx="32" cy="32" r="26" fill="none" stroke="'+pb[2]+'" stroke-width="8" stroke-dasharray="'+dash+' '+circ.toFixed(1)+'" transform="rotate(-90 32 32)"/><text x="32" y="36" font-size="12" font-weight="700" text-anchor="middle" fill="#222">'+Math.round(ps.pct)+'%</text></svg>'+
+  '<div><div class="note">'+(rp?"My on-time %":"PM view: on-time %")+' · '+PBY[who].name+'</div><b id="myPct">'+ps.pct.toFixed(1)+'%</b> <span class="pill '+pb[0]+'" style="font-size:11px">'+pb[1]+'</span><div class="note">'+ps.ontime+' / '+ps.counted+' counted · bank <b id="myBank">'+money(ps.balC)+'</b> of '+money(PBY[who].base*100)+'</div></div></div>'+
+  '<div><div class="note">Team met % over time vs <b>85% target</b> (display only) · updates live</div>'+teamChart()+'</div></div>';
+ var sel=c.sel?find(c.sel):null;
+ var po='<option value="all">Everyone</option>'+PEOPLE.map(function(p){return '<option value="'+p.id+'"'+(c.person===p.id?" selected":"")+'>'+p.name+'</option>';}).join("");
+ var so=[["all","All"],["open","○ Open"],["done_pending","… Confirm"],["met","✓ Met"],["late","◷ Late"],["missed","✕ Missed"],["excused","– Excused"]].map(function(s){return '<option value="'+s[0]+'"'+(c.status===s[0]?" selected":"")+'>'+s[1]+'</option>';}).join("");
+ var title=c.view==="month"?MON[D(c.month).getUTCMonth()]+" "+c.month.slice(0,4):"Week of "+fmtS(weekStart());
+ return '<div class="row">'+backBtn()+'<span class="crumb">Riverside Medical (example) › Productivity › Engineering › Calendar</span></div>'+
+ '<div class="row" style="margin:6px 0"><button class="btn" data-act="calNav" data-v="-1" aria-label="Previous">‹</button><b style="font-size:16px;min-width:120px;text-align:center">'+title+'</b><button class="btn" data-act="calNav" data-v="1" aria-label="Next">›</button><button class="btn" data-act="calToday">Today</button>'+
+ '<span class="seg"><button class="'+(c.view==="month"?"on":"")+'" data-act="calView" data-v="month">Month</button><button class="'+(c.view==="week"?"on":"")+'" data-act="calView" data-v="week">Week</button></span>'+
+ '<label class="ctl">Person <select class="btn" id="fPerson" data-act="fPerson">'+po+'</select></label><label class="ctl">Status <select class="btn" id="fStatus" data-act="fStatus">'+so+'</select></label>'+
+ '<button class="togl'+(c.mine?" on":"")+'" data-act="fMine"'+(rp?"":' disabled title="The PM has no own commitments"')+'>☆ Mine</button><span class="chip d hidephone">Provisional until project close</span></div>'+
+ '<div class="row note" style="margin-bottom:6px">'+["open","done_pending","met","late","missed","excused"].map(function(s){return '<span class="chip '+ST[s][0]+'">'+ST[s][1]+'</span>';}).join("")+'<span>Tier letter on every chip.</span><span class="hidephone">Drag a future chip to another day to request a new date.</span></div>'+
+ '<div class="calwrap"><div style="min-width:0">'+grid+strip+perf+'</div>'+(sel?vPanel(sel):'<div class="side empty"><b>Select a chip</b><div class="note" style="margin-top:4px">Click any chip for its detail, cost if missed, history and the actions for '+ROLES[st.role].label+'.</div></div>')+'</div>';}
+function teamChart(){var hist=[80.0,84.5,88.2,90.0],we=["2026-10-04","2026-10-11","2026-10-18","2026-10-25","2026-11-01"];
+ var all=hist.concat(we.map(function(w){return team(w).pct;})),W=520,H=70,n=all.length,lo=70,hi=100,pts=[];
+ function y(v){return (H-6-(Math.max(lo,Math.min(hi,v))-lo)/(hi-lo)*(H-12)).toFixed(1);}
+ all.forEach(function(v,i){pts.push((i*(W-40)/(n-1)+4).toFixed(1)+","+y(v));});
+ return '<svg width="100%" height="76" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" aria-label="team chart" id="teamChart"><line x1="0" x2="'+W+'" y1="'+y(85)+'" y2="'+y(85)+'" stroke="#15803D" stroke-dasharray="5 4" stroke-width="1.5"/><text x="'+(W-2)+'" y="'+(y(85)-3)+'" font-size="10" text-anchor="end" fill="#166534">85% target</text><polyline fill="none" stroke="#333" stroke-width="2" points="'+pts.join(" ")+'"/>'+
+ pts.map(function(p){var a=p.split(",");return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="2.5" fill="#333"/>';}).join("")+'</svg><div class="note">Weekly, Sep 6 → Nov 1 (example history before Oct) · now '+team().pct.toFixed(1)+'%</div>';}
+function vPanel(x){var rp=rolePerson(),p=PBY[x.owner],s=ST[x.state],isOwner=rp===x.owner,ch=canChair(),miss=p.base*100*x.bp/100;
+ var oa="";if(isOwner){var cNmt=x.state==="open"&&!pastDue(x)&&!x.request;
+  oa='<div class="role"><div class="rolet">You are the owner ('+p.name+')</div><div class="acts">'+
+  '<button class="btn p" data-act="checkOff" data-id="'+x.id+'"'+(x.state==="open"?"":" disabled")+'>☐ Check off</button>'+
+  '<button class="btn" data-act="concern" data-id="'+x.id+'">Raise concern</button>'+
+  '<button class="btn" data-act="nmt" data-id="'+x.id+'"'+(cNmt?"":" disabled")+'>⏱ Need more time</button>'+
+  (st.accept==="OPTIONAL"&&(x.state==="open"||x.state==="done_pending")?(x.accepted?'<span class="chip">Accepted ✓</span>':'<button class="btn" data-act="acceptItem" data-id="'+x.id+'">Accept (optional)</button>'):"")+
+  '</div><div class="why" style="margin-top:4px">'+(st.accept==="OPTIONAL"?"Accept is optional: a logged acknowledgement that never blocks counting.":"Owner acceptance is Off on this project, so there is no Accept button.")+(x.request?" A date change is pending.":(pastDue(x)&&x.state==="open"?" Past due: Need more time is closed. Ask the PM to excuse it if it was out of your control.":""))+'</div></div>';}
+ var ca="";if(ch){var cMet=x.state==="done_pending"&&x.ownerDoneAt<=x.due,cLate=x.state==="done_pending",cMiss=x.state==="open"&&pastDue(x),cExc=st.role==="pm"&&(x.state==="open"||x.state==="done_pending");
+  var hint=x.state==="open"&&!pastDue(x)?"Met / Late unlock after the owner checks off. Missed unlocks after "+fmt(x.due)+".":x.state==="done_pending"?(cMet?"Checked off on time: confirm Met (or Late).":"Checked off after the due date: confirm Late."):x.state==="open"?"Overdue and not checked off: confirm Missed.":"Outcome confirmed.";
+  ca='<div class="role"><div class="rolet">You are the '+(st.role==="pm"?"PM":"chair (Dana)")+'</div><div class="acts">'+
+  '<button class="btn" data-act="confirm" data-v="met" data-id="'+x.id+'"'+(cMet?"":" disabled")+'>✓ Met</button><button class="btn" data-act="confirm" data-v="late" data-id="'+x.id+'"'+(cLate?"":" disabled")+'>◷ Late</button><button class="btn" data-act="confirm" data-v="missed" data-id="'+x.id+'"'+(cMiss?"":" disabled")+'>✕ Missed</button>'+
+  '<button class="btn" data-act="excuse" data-id="'+x.id+'"'+(cExc?"":" disabled")+(st.role==="chair"?' title="The PM grants Excused (project rule)"':"")+'>– Excuse</button>'+
+  (x.state==="open"&&!pastDue(x)&&!x.request?'<button class="btn" data-act="nmt" data-id="'+x.id+'">⇄ Request new date</button>':"")+'</div>'+
+  '<div class="why" style="margin-top:4px">'+hint+(st.role==="chair"?" Excuse is granted by the PM.":" Excuse needs a reason.")+'</div>'+
+  (x.request?'<div class="warn" style="margin-top:6px" id="reqBox">⇄ Request: move to <b>'+fmt(x.request.date)+'</b> · “'+esc(x.request.reason)+'” · by '+esc(x.request.by)+'<div class="acts" style="margin-top:5px"><button class="btn p" data-act="approveReq" data-id="'+x.id+'">Approve</button><button class="btn" data-act="declineReq" data-id="'+x.id+'">Decline</button></div></div>':"")+'</div>';}
+ if(!isOwner&&!ch)oa='<div class="role"><div class="note">View only: this is '+p.name+'’s commitment. Switch to Chair or PM to confirm it.</div></div>';
+ return '<div class="side" id="panel"><div class="row"><span class="chip '+s[0]+'">'+s[1]+'</span>'+(x.request?'<span class="chip d">⇄ change requested</span>':"")+'<span style="flex:1"></span><button class="btn sm" data-act="closePanel">✕ Close</button></div>'+
+ '<div style="font-size:16px;font-weight:700;margin:6px 0 2px">'+esc(x.title)+'</div>'+
+ '<div class="kv"><div>Owner</div><div>'+p.name+' (example) · '+p.role+'</div><div>Tier</div><div><span class="tier">'+["S","M","L"].map(function(t){return '<span class="'+(x.tier===t?"on":"")+'">'+t+'</span>';}).join("")+'</span><div class="why">'+GUIDE[x.tier]+'</div></div>'+
+ '<div>Due</div><div><b>'+fmt(x.due)+', 2026</b></div><div>Done when</div><div>“'+esc(x.doneWhen)+'”</div><div>Source</div><div><button class="btn sm" data-act="tab" data-v="meeting">'+esc(x.meeting)+' ↗</button></div>'+
+ '<div>Counted</div><div>Yes, since the chair locked it.'+(st.accept==="OPTIONAL"?(x.accepted?" Owner accepted.":" Owner accept: optional, not given."):"")+'</div></div>'+
+ '<div class="sec">Cost if missed (example dollars)</div><div class="cost"><div><span class="note">Missed ('+x.tier+' = '+x.bp+'%)</span><b>'+money(-miss)+'</b></div><div><span class="note">Met late (half)</span><b>'+money(-miss/2)+'</b></div><div><span class="note">Met on time</span><b>$0.00</b></div></div>'+
+ '<div class="why" style="margin-top:3px">Base '+money(p.base*100)+' × '+x.bp+'% (rate when locked). Goes to the team open balance. Provisional until project close.</div>'+
+ '<div class="sec">Status history</div><div class="tl">'+x.history.map(function(h){return '<div>'+esc(h.t)+' <span class="note">'+esc(h.by)+' · '+esc(h.at)+'</span></div>';}).join("")+'</div>'+
+ '<div class="sec">Concerns &amp; disputes</div><div class="note">'+(x.concerns.length?x.concerns.map(function(c){return "• “"+esc(c.text)+"” · "+esc(c.by)+" · "+esc(c.at);}).join("<br>"):"None. A concern doesn’t change status or money.")+'</div>'+
+ '<div class="sec">Actions for your role</div>'+oa+ca+'</div>';}
+/* ---------- My week ---------- */
+function vMyWeek(){var rp=rolePerson(),ws=add(TODAY,-dow(TODAY)),cols="";
+ if(rp){for(var i=0;i<7;i++){var d=add(ws,i),its=st.items.filter(function(x){return x.owner===rp&&x.due===d;});
+  cols+='<div class="mwcol"'+(d===TODAY?' style="box-shadow:inset 0 0 0 2px #222"':"")+'><div style="font-weight:700;font-size:12px;margin-bottom:6px">'+fmt(d)+(d===TODAY?" · today":"")+'</div>'+
+  (its.map(function(x){var s=ST[x.state];return '<div class="mwcard" data-mw="'+x.id+'"><div class="row"><button class="btn sm" data-act="checkOff" data-id="'+x.id+'"'+(x.state==="open"?"":" disabled")+'>'+(x.state==="open"?"☐":"☑")+' Check off</button><span class="chip '+s[0]+'">'+s[1]+'</span><span class="tier"><span class="on">'+x.tier+'</span></span></div><div style="font-weight:600;margin-top:4px">'+esc(x.title)+'</div><div class="note">'+esc(x.meeting)+'</div>'+
+   (x.state==="open"&&!pastDue(x)&&!x.request?'<button class="btn sm" style="margin-top:4px" data-act="nmt" data-id="'+x.id+'">⏱ Need more time</button>':(x.request?'<div class="note">⇄ change to '+fmt(x.request.date)+' pending</div>':""))+'</div>';}).join("")||'<div class="note">Nothing due</div>')+'</div>';}}
+ var ps=rp?stats(rp):null,pb=ps?band(ps.pct):null;
+ var q=canChair()?st.items.filter(function(x){return x.state==="done_pending"||(x.state==="open"&&pastDue(x));}):[];
+ var qh=canChair()?'<div class="card" style="margin-top:10px"><b>Waiting for you to confirm</b> <span class="note">('+q.length+')</span><div class="tblwrap"><table style="margin-top:6px"><tr><th>Item</th><th>Due</th><th>State</th><th></th></tr>'+
+  q.map(function(x){return '<tr><td><b>'+x.tier+'</b> '+PBY[x.owner].name+' · '+esc(x.title)+'</td><td>'+fmt(x.due)+'</td><td><span class="chip '+ST[x.state][0]+'">'+ST[x.state][1]+'</span></td><td><button class="btn sm" data-act="openItem" data-id="'+x.id+'">Open</button></td></tr>';}).join("")+'</table></div></div>':"";
+ return '<div class="row">'+backBtn()+'<span class="crumb">Home · Today</span></div><div class="row" style="margin:6px 0"><div class="h1">Good evening, '+(rp?PBY[rp].name:"PM")+' (example)</div><span class="note">'+fmt(TODAY)+', 2026 (demo clock)</span></div>'+
+ (rp?'<div class="card"><div class="row"><b style="font-size:15px">My week</b><span class="chip d">Proposal 2</span><span class="note">'+fmt(ws)+' – '+fmt(add(ws,6))+' · Riverside Medical (example)</span><span style="flex:1"></span><b>'+ps.pct.toFixed(1)+'%</b><span class="pill '+pb[0]+'" style="font-size:11px">'+pb[1]+'</span><button class="btn" data-act="tab" data-v="calendar">Open calendar ›</button></div>'+
+ '<div class="mw" style="margin-top:8px">'+cols+'</div><div class="note" style="margin-top:6px">One tap on Check off sends it to the chair (blue “… Confirm”). No Accept prompt here.</div></div>'
+ :'<div class="anno">The PM has no commitments of their own. Use the queue below, or switch to Owner (Luis) to try My week.</div>')+qh;}
+/* ---------- Settings ---------- */
+function vSettings(){var pm=st.role==="pm",dis=pm?"":" disabled";
+ return '<div class="row">'+backBtn()+'<span class="crumb">Riverside Medical (example) › Settings › Commitments</span></div><div class="h1" style="margin:6px 0">Project settings · Commitments</div>'+
+ (pm?"":'<div class="anno" style="margin-bottom:8px">Read-only for '+ROLES[st.role].label+'. Switch to <b>PM</b> to edit. (The Owner acceptance switch in the top bar is a demo control anyone can flip.)</div>')+
+ '<div class="card" style="padding:0"><div class="settingsrow"><div><b>Owner acceptance</b><div class="note">Per project · default Optional</div></div><div><span class="seg">'+["OPTIONAL","OFF"].map(function(k){return '<button class="'+(st.accept===k?"on":"")+'" data-act="accept" data-v="'+k+'"'+dis+'>'+(k==="OPTIONAL"?"Optional":"Off")+'</button>';}).join("")+'</span>'+
+ '<div style="margin-top:6px">A commitment <b>counts once the chair locks it</b>. Optional shows an Accept button that never blocks; Off hides it. There is no Required mode.</div></div></div>'+
+ '<div class="settingsrow" style="border:0"><div><b>Tier weights</b> <span class="chip d">Proposal 9</span><div class="note">PM edits · audit-logged</div></div><div><div class="row">'+
+ ["S","M","L"].map(function(t){return '<label class="row" style="gap:4px"><span class="tier"><span class="on">'+t+'</span></span> miss = <input class="inp" id="bp'+t+'" type="number" step="0.5" min="0.5" max="20" value="'+st.bp[t]+'" style="width:72px"'+dis+'> %</label>';}).join("")+
+ '<button class="btn" data-act="bpReset"'+dis+'>Reset to 1 / 2 / 4%</button></div><label class="note" style="display:block;margin-top:8px" for="bpNote">Change note *</label><input class="inp" id="bpNote" placeholder="Why the change (goes in the audit log)"'+dis+'>'+
+ '<div class="row" style="margin-top:8px"><button class="btn p" data-act="bpSave"'+dis+'>Save tier weights</button><span class="note">Default 1 / 2 / 4%. Keep S &lt; M &lt; L. Late = half. A change applies to commitments locked after it; locked ones keep their rate.</span></div><div id="bpErr" class="note" style="color:#991B1B"></div></div></div></div>'+
+ '<div class="card" style="margin-top:10px"><b>Audit log · commitment settings</b><div class="tblwrap"><table style="margin-top:6px" id="auditTbl"><tr><th>When</th><th>Who</th><th>Change</th></tr>'+st.settingsLog.slice().reverse().map(function(r){return '<tr><td>'+esc(r.at)+'</td><td>'+esc(r.by)+'</td><td>'+esc(r.t)+'</td></tr>';}).join("")+'</table></div></div>';}
+/* ---------- actions ---------- */
+function logIt(it,t){it.history.push({t:t,by:st.role==="pm"?"PM":(st.role==="chair"?"Dana (chair)":"Luis"),at:fmtS(TODAY)});}
+var A={
+ back:back,tab:function(e){go(e.dataset.v);},
+ reset:function(){try{localStorage.removeItem(KEY);}catch(x){}var rem=st.remember;st=seed();st.remember=rem;closeAll();render();toast("Demo reset to the example data.");},
+ role:function(e){st.role=e.dataset.v;if(!rolePerson())st.cal.mine=false;render();toast("Viewing as "+ROLES[st.role].label);},
+ accept:function(e){if(st.accept===e.dataset.v)return;st.accept=e.dataset.v;st.settingsLog.push({at:fmtS(TODAY),by:ROLES[st.role].label,t:"Owner acceptance → "+(st.accept==="OPTIONAL"?"Optional":"Off")});mark("acc");render();toast("Owner acceptance: "+(st.accept==="OPTIONAL"?"Optional":"Off"));},
+ tryMin:function(){st.tryMin=!st.tryMin;renderChrome();save();},
+ closeOverlay:function(){closeAll();},
+ addLine:function(){var i=document.getElementById("lineInput");if(i&&addLineFromText(i.value)){render();toast("Line added. Turn on Commit to make it a commitment.");}},
+ commit:function(e){var l=lineById(e.dataset.id);l.commit=!l.commit;if(!l.commit)l.tier=null;mark("meet");render();},
+ tier:function(e){var l=lineById(e.dataset.id);l.tier=e.dataset.v;render();},
+ due:function(e){var l=lineById(e.dataset.id);if(st.meeting.locked&&l.commit){A.nmt({dataset:{id:l.itemId}});return;}
+  if(!canChair()){toast("Only the chair or PM sets the due date before lock.");return;}openPicker(e,{mode:"line",id:l.id,owner:l.owner,value:l.due});},
+ pickDay:function(e){pickDay(e.dataset.v);},
+ pkMonth:function(e){var d=D(pk.month);d.setUTCMonth(d.getUTCMonth()+(+e.dataset.v));pk.month=S(d);renderPicker();},
+ lock:function(){lock();},wrap:function(){st.meeting.wrapOpen=true;render();},wrapClose:function(){st.meeting.wrapOpen=false;render();},
+ openItem:function(e){var it=find(e.dataset.id);st.cal.sel=it.id;if(st.cal.view==="month")st.cal.month=monthStart(it.due);st.cal.phoneDay=it.due;
+  if(st.tab!=="calendar")go("calendar");else render();var p=document.getElementById("panel");if(p&&window.innerWidth>760&&p.scrollIntoView)p.scrollIntoView({block:"nearest"});},
+ closePanel:function(){st.cal.sel=null;render();},
+ phoneDay:function(e,ev){if(ev.target.closest(".cc"))return;if(window.innerWidth<=760){st.cal.phoneDay=e.dataset.v;render();}},
+ calNav:function(e){var c=st.cal,n=+e.dataset.v;if(c.view==="month"){var d=D(c.month);d.setUTCMonth(d.getUTCMonth()+n);c.month=S(d);}else c.weekStart=add(weekStart(),7*n);render();},
+ calToday:function(){st.cal.month=monthStart(TODAY);st.cal.weekStart=null;render();},
+ calView:function(e){st.cal.view=e.dataset.v;render();},
+ fMine:function(){st.cal.mine=!st.cal.mine;render();},
+ checkOff:function(e){var it=find(e.dataset.id);if(rolePerson()!==it.owner){toast("Only "+PBY[it.owner].name+" can check this off.");return;}
+  it.state="done_pending";it.ownerDoneAt=TODAY;logIt(it,"Checked off by owner"+(TODAY>it.due?" (after due)":""));mark("check");render();toast("Checked off. It now shows blue “… Confirm” for the chair.");},
+ acceptItem:function(e){var it=find(e.dataset.id);if(st.accept!=="OPTIONAL")return;it.accepted=true;logIt(it,"Owner accepted (optional acknowledgement)");render();toast("Accepted. This never changes counting.");},
+ concern:function(e){reasonModal("Raise a concern","saveConcern",e.dataset.id,"What worries you about this commitment?");},
+ saveConcern:function(e){var t=document.getElementById("reasonTxt").value.trim();if(!t){toast("Write the concern first.");return;}var it=find(e.dataset.id);it.concerns.push({text:t,by:ROLES[st.role].label,at:fmtS(TODAY)});logIt(it,"Concern raised: “"+t+"”");closeAll();render();toast("Concern logged for the chair and PM (demo only).");},
+ nmt:function(e){var it=find(e.dataset.id);if(!it)return;if(it.state!=="open"||pastDue(it)){toast("Need more time is only for open items before their due date.");return;}if(it.request){toast("A date change is already pending.");return;}reqModal(it,null);},
+ sendReq:function(e){var it=find(e.dataset.id),s=md&&md.state,r=document.getElementById("reqReason").value.trim();
+  if(!s||!s.date){toast("Pick the new date.");return;}if(s.date===it.due){toast("Pick a different date.");return;}if(!r){toast("A reason is required.");return;}
+  it.request={date:s.date,reason:r,by:ROLES[st.role].label};logIt(it,"Requested new date "+fmt(s.date)+": “"+r+"”");st.cal.sel=it.id;mark("move");closeAll();render();toast("Request sent. The chip stays put until the chair or PM approves.");},
+ approveReq:function(e){var it=find(e.dataset.id),r=it.request,old=it.due;it.due=r.date;it.request=null;logIt(it,"Renegotiated "+fmtS(old)+" → "+fmtS(r.date)+" (approved before due · no deduction)");if(st.cal.view==="month")st.cal.month=monthStart(it.due);mark("move");render();toast("Approved. The chip moved to "+fmt(r.date)+".");},
+ declineReq:function(e){var it=find(e.dataset.id);logIt(it,"Date change declined (stays "+fmtS(it.due)+")");it.request=null;render();toast("Declined. Due date unchanged.");},
+ confirm:function(e){var it=find(e.dataset.id),v=e.dataset.v,before=stats(it.owner).pct,tb=team().pct;it.state=v;logIt(it,"Confirmed "+ST[v][1]);mark("confirm");render();
+  toast(PBY[it.owner].name+": on-time "+before.toFixed(1)+"% → "+stats(it.owner).pct.toFixed(1)+"% · team "+tb.toFixed(1)+"% → "+team().pct.toFixed(1)+"%");},
+ excuse:function(e){reasonModal("Excuse (PM)","saveExcuse",e.dataset.id,"Why was this out of the owner’s control?");},
+ saveExcuse:function(e){var t=document.getElementById("reasonTxt").value.trim();if(!t){toast("A reason is required.");return;}var it=find(e.dataset.id);it.state="excused";it.request=null;logIt(it,"Excused by PM: “"+t+"”");closeAll();render();toast("Excused: not counted, no deduction.");},
+ bpReset:function(){["S","M","L"].forEach(function(t,i){document.getElementById("bp"+t).value=[1,2,4][i];});},
+ bpSave:function(){var v={S:+document.getElementById("bpS").value,M:+document.getElementById("bpM").value,L:+document.getElementById("bpL").value},note=document.getElementById("bpNote").value.trim(),err=document.getElementById("bpErr");
+  if(!(v.S>=0.5&&v.M>=0.5&&v.L>=0.5&&v.S<=20&&v.M<=20&&v.L<=20)){err.textContent="Each rate must be between 0.5% and 20%.";return;}
+  if(!(v.S<v.M&&v.M<v.L)){err.textContent="Keep S < M < L.";return;}if(!note){err.textContent="A change note is required (it goes in the audit log).";return;}
+  var o=st.bp;st.bp=v;st.settingsLog.push({at:fmtS(TODAY),by:"PM",t:"Tier weights "+o.S+"/"+o.M+"/"+o.L+"% → "+v.S+"/"+v.M+"/"+v.L+"% · note “"+note+"”"});mark("pct");render();toast("Saved and logged. Commitments locked from now on use "+v.S+"/"+v.M+"/"+v.L+"%.");}
+};
+document.addEventListener("click",function(ev){var el=ev.target.closest("[data-act]");if(!el)return;var a=el.dataset.act;
+ if(el.tagName==="SELECT"||el.tagName==="INPUT")return;if(el.disabled)return;if(a==="closeOverlay"&&el.id==="ov"&&ev.target!==el)return;if(A[a])A[a](el,ev);});
+document.addEventListener("change",function(ev){var el=ev.target,a=el.dataset&&el.dataset.act;
+ if(a==="fPerson"){st.cal.person=el.value;render();}else if(a==="fStatus"){st.cal.status=el.value;render();}
+ else if(a==="tryChk"){st.tried[el.dataset.v]=el.checked;renderChrome();save();}
+ else if(a==="remember"){st.remember=el.checked;save();toast(st.remember?"Saved on this device only.":"Not saved: closing the file resets the demo.");}});
+document.addEventListener("keydown",function(ev){if(ev.key==="Escape")closeAll();
+ if(ev.key==="Enter"&&ev.target.id==="lineInput"){ev.preventDefault();A.addLine();}
+ if(ev.key==="Enter"&&ev.target.id==="pickType"){ev.preventDefault();var d=parseDate(ev.target.value);if(!d){toast("Couldn’t read that date. Try thu, oct 30, +3d, next mtg.");return;}if(d<TODAY){toast("That date is in the past.");return;}pickDay(d);}});
+document.addEventListener("mouseover",function(ev){if(!pk||!ev.target.closest)return;var b=ev.target.closest(".mini button");if(!b||b.disabled||pk.hover===b.dataset.v)return;
+ var prev=pk.hover;pk.hover=b.dataset.v;var ex=pk.mode==="line"?pk.id:pk.itemId;if(ownerLoad(pk.owner,pk.hover,ex)>=2||(prev&&ownerLoad(pk.owner,prev,ex)>=2))renderPicker();});
+var lpT=null;
+document.addEventListener("touchstart",function(ev){var b=ev.target.closest&&ev.target.closest(".tier button");if(!b)return;lpT=setTimeout(function(){toast(b.getAttribute("title"));},450);},{passive:true});
+document.addEventListener("touchend",function(){clearTimeout(lpT);},{passive:true});
+var dragId=null;
+document.addEventListener("dragstart",function(ev){var c=ev.target.closest&&ev.target.closest('.cc[draggable="true"]');if(!c)return;dragId=c.dataset.id;try{ev.dataTransfer.setData("text/plain",dragId);ev.dataTransfer.effectAllowed="move";}catch(x){}});
+document.addEventListener("dragover",function(ev){if(!dragId||!ev.target.closest)return;var d=ev.target.closest("[data-day]");if(!d)return;ev.preventDefault();var o=document.querySelectorAll(".day.drop");for(var i=0;i<o.length;i++)o[i].classList.remove("drop");d.classList.add("drop");});
+document.addEventListener("drop",function(ev){if(!dragId||!ev.target.closest)return;var d=ev.target.closest("[data-day]");if(!d)return;ev.preventDefault();var it=find(dragId),day=d.dataset.day;dragId=null;
+ if(day<TODAY){toast("Can’t move to a past day.");render();return;}if(day===it.due){render();return;}st.cal.sel=it.id;render();reqModal(it,day);});
+document.addEventListener("dragend",function(){dragId=null;var o=document.querySelectorAll(".day.drop");for(var i=0;i<o.length;i++)o[i].classList.remove("drop");});
+window.__proto={state:function(){return st;}};
+render();
+})();
+</script>
+</body></html>
